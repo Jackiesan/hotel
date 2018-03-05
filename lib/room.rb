@@ -6,10 +6,10 @@ require 'awesome_print'
 module Hotel
   class Room
 
-    attr_reader :id
-    
-    def initialize(id)
-      @id = id
+    attr_reader :room_id
+
+    def initialize(room_id)
+      @room_id = room_id
     end
 
   end
