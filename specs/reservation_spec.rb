@@ -9,7 +9,7 @@ describe "Reservation class" do
       @reservation = administrator.reserve_a_room(Date.new(2017,2,3), 3, 4)
     end
 
-    it "is an instance of Administrator" do
+    it "is an instance of Reservation" do
       @reservation.must_be_kind_of Hotel::Reservation
     end
 
