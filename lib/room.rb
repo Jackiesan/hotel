@@ -7,10 +7,11 @@ module Hotel
 
   class Room
 
-    attr_reader :room_id
+    attr_reader :room_id, :cost
 
     def initialize(room_id)
      @room_id = room_id
+     @cost = 200
     end
 
   end
