@@ -18,7 +18,7 @@ module Hotel
 
     def room_list
 
-      room_ids = (0..20).to_a
+      room_ids = (1..20).to_a
       room_list = []
       room_ids.each do |room_id|
         room_list << Room.new(room_id)
@@ -31,11 +31,38 @@ module Hotel
     end
 
     def reserve_a_room(date, number_of_nights, room_id)
+      check_date(date)
+      check_number_of_nights(number_of_nights)
+      check_room_id(room_id)
       new_reservation = Reservation.new(date, number_of_nights, room_id)
       @reservations << new_reservation
       return new_reservation
     end
 
+    private
+
+    def check_date(date)
+      if date.class != Date
+        raise ArgumentError.new("Date entered is not valid date (got #{date})")
+      end
+    end
+
+    def check_number_of_nights(number_of_nights)
+      if number_of_nights.class != Integer || number_of_nights < 1
+        raise ArgumentError.new("Number of nights not valid. Minimum stay is at least 1 night (got #{number_of_nights})")
+      end
+    end
+
+    def check_room_id(room_id)
+      if room_id != Integer || room_id < 1 || room_id > 20
+        raise ArgumentError.new("Room ID entered does not exist (got #{room_id})")
+      end
+    end
+
+
   end
 
 end
+
+administrator = Hotel::Administrator.new
+puts administrator.room_list.first.room_id

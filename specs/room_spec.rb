@@ -19,7 +19,7 @@ describe "Room class" do
       end
 
       @room.room_id.must_be_kind_of Integer
-      @room.cost_per_night.must_be_kind_of Integer
+      @room.cost_per_night.must_be_kind_of Float
 
     end
 

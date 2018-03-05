@@ -11,7 +11,7 @@ module Hotel
 
     def initialize(room_id)
      @room_id = room_id
-     @cost_per_night = 200
+     @cost_per_night = 200.00
     end
 
   end
