@@ -4,7 +4,7 @@ require 'pry'
 require 'awesome_print'
 
 require_relative 'room'
-require_relative 'reservations'
+require_relative 'reservation'
 
 module Hotel
   class Administrator

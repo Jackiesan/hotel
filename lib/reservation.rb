@@ -9,7 +9,7 @@ module Hotel
     attr_reader :date, :number_of_nights, :room_id
 
     def initialize(date, number_of_nights, room_id)
-      @date = date
+      @start_date = date
       @number_of_nights = number_of_nights
       @room_id = room_id
     end
