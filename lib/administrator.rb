@@ -31,7 +31,9 @@ module Hotel
     end
 
     def reserve_a_room(date, number_of_nights, room_id)
-      @reservations << Reservation.new(date, number_of_nights, room_id)
+      new_reservation = Reservation.new(date, number_of_nights, room_id)
+      @reservations << new_reservation
+      return new_reservation
     end
 
   end

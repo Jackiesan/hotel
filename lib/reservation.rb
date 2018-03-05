@@ -1,6 +1,7 @@
 require 'time'
 require 'pry'
 require 'awesome_print'
+require 'time'
 
 
 module Hotel
@@ -9,7 +10,7 @@ module Hotel
     attr_reader :date, :number_of_nights, :room_id
 
     def initialize(date, number_of_nights, room_id)
-      @start_date = date
+      @date = date
       @number_of_nights = number_of_nights
       @room_id = room_id
     end
