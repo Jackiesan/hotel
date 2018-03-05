@@ -13,16 +13,16 @@ describe "Reservation class" do
       @reservation.must_be_kind_of Hotel::Reservation
     end
 
-    # it "establishes the base data structures when instantiated" do
-    #   [:date, :number_of_nights, :room_id].each do |prop|
-    #     @reservation.must_respond_to prop
-    #   end
-    #
-    #   @reservation.date.must_be_kind_of Date
-    #   @reservation.number_of_nights.must_be_kind_of Integer
-    #   @reservation.room_id.must_be_kind_of Integer
+    it "establishes the base data structures when instantiated" do
+      [:date, :number_of_nights, :room_id].each do |prop|
+        @reservation.must_respond_to prop
+      end
 
-    # end
+      @reservation.date.must_be_kind_of Date
+      @reservation.number_of_nights.must_be_kind_of Integer
+      @reservation.room_id.must_be_kind_of Integer
+
+    end
 
   end
 
