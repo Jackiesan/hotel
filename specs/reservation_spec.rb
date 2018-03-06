@@ -5,7 +5,7 @@ describe "Reservation class" do
   describe "Reservation instantiation" do
 
     before do
-      @reservation = Hotel::Reservation.new(1, Date.new(2017,2,3), 3, 4)
+      @reservation = Hotel::Reservation.new(1, Date.new(2017,2,3), 3, Hotel::Room.new(1))
     end
 
     it "is an instance of Reservation" do
@@ -13,14 +13,14 @@ describe "Reservation class" do
     end
 
     it "establishes the base data structures when instantiated" do
-      [:reservation_id, :date, :number_of_nights, :room_id].each do |prop|
+      [:reservation_id, :date, :number_of_nights, :room].each do |prop|
         @reservation.must_respond_to prop
       end
 
       @reservation.reservation_id.must_be_kind_of Integer
       @reservation.date.must_be_kind_of Date
       @reservation.number_of_nights.must_be_kind_of Integer
-      @reservation.room_id.must_be_kind_of Integer
+      @reservation.room.must_be_kind_of Hotel::Room
     end
 
   end

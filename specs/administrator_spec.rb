@@ -43,11 +43,15 @@ describe "Administrator class" do
 
       all_costs = @room_list.all? { |room| room.cost_per_night == 200.00 }
       all_costs.must_equal true
+
+      all_statuses = @room_list.all? { |room| room.status == :AVAILABLE}
+      all_statuses.must_equal true
     end
 
     it "stores room id as an integer within range 1 and 20" do
       all_room_ids =  @room_list.all? { |room| (room.room_id.class == Integer) && (room.room_id > 0 || room.room_id < 20) }
       all_room_ids.must_equal true
+      @room_list.length.must_equal 20
     end
 
     it "stores cost per night as a float that is greater or equal to zero" do
@@ -60,6 +64,7 @@ describe "Administrator class" do
   describe "reserve_a_room method" do
     before do
       @administrator = Hotel::Administrator.new
+      @room = @administrator.room_list[8]
       @initial_reservations_length = @administrator.reservations.length
       @first_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
     end
@@ -72,12 +77,12 @@ describe "Administrator class" do
       @first_reservation.reservation_id.must_equal 1
       @first_reservation.date.must_equal Date.new(2017,2,3)
       @first_reservation.number_of_nights.must_equal 3
-      @first_reservation.room_id.must_equal 9
+      @first_reservation.room.room_id.must_equal @room.room_id
 
       @first_reservation.reservation_id.must_be_kind_of Integer
       @first_reservation.date.must_be_kind_of Date
       @first_reservation.number_of_nights.must_be_kind_of Integer
-      @first_reservation.room_id.must_be_kind_of Integer
+      @first_reservation.room.must_be_kind_of Hotel::Room
     end
 
     it "adds the new Reservation to the collection of reservations in Administrator" do

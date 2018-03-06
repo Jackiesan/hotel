@@ -26,15 +26,22 @@ module Hotel
       return room_list
     end
 
+    def find_room(room_id)
+      check_room_id(room_id)
+      @rooms.find{ |room| room.room_id == room_id}
+    end
+
     def reserve_a_room(date, number_of_nights, room_id)
 
       check_date(date)
       check_number_of_nights(number_of_nights)
-      check_room_id(room_id)
+      # check_room_id(room_id)
+
+      room = find_room(room_id)
 
       reservation_id = @reservations.length + 1
 
-      new_reservation = Reservation.new(reservation_id, date, number_of_nights, room_id)
+      new_reservation = Reservation.new(reservation_id, date, number_of_nights, room)
       @reservations << new_reservation
       return new_reservation
     end
@@ -64,8 +71,10 @@ module Hotel
 
 end
 
-# administrator = Hotel::Administrator.new
+administrator = Hotel::Administrator.new
 # rooms = administrator.room_list.each do |room|
 #   puts room.status
 # end
 # puts rooms.length
+puts administrator.room_list[0].room_id
+puts administrator.find_room(1).room_id
