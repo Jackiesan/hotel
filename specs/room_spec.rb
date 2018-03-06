@@ -14,12 +14,13 @@ describe "Room class" do
     end
 
     it "establishes the base data structures when instantiated" do
-      [:room_id, :cost_per_night].each do |prop|
+      [:room_id, :cost_per_night, :status].each do |prop|
         @room.must_respond_to prop
       end
 
       @room.room_id.must_be_kind_of Integer
       @room.cost_per_night.must_be_kind_of Float
+      @room.status.must_be_kind_of Symbol
 
     end
 

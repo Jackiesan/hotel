@@ -21,7 +21,6 @@ describe "Reservation class" do
       @reservation.date.must_be_kind_of Date
       @reservation.number_of_nights.must_be_kind_of Integer
       @reservation.room_id.must_be_kind_of Integer
-
     end
 
   end

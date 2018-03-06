@@ -63,3 +63,9 @@ module Hotel
   end
 
 end
+
+# administrator = Hotel::Administrator.new
+# rooms = administrator.room_list.each do |room|
+#   puts room.status
+# end
+# puts rooms.length
