@@ -24,7 +24,7 @@ describe "Administrator class" do
 
   end
 
-  describe "Room_list method" do
+  describe "room_list method" do
     before do
       administrator = Hotel::Administrator.new
       @room_list = administrator.room_list
