@@ -26,4 +26,19 @@ describe "Reservation class" do
 
   end
 
+  describe "total_cost method" do
+
+    before do
+        @reservation = Hotel::Reservation.new(1, Date.new(2017,2,3), 3, 4)
+    end
+
+    it "returns the total cost of the reservation" do
+      @reservation.total_cost.must_equal 600.00
+    end
+
+    it "returns the value as a float" do
+      @reservation.total_cost.must_be_kind_of Float
+    end
+  end
+
 end

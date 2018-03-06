@@ -16,5 +16,9 @@ module Hotel
       @room_id = room_id
     end
 
+    def total_cost
+      return 200.00 * @number_of_nights
+    end
+
   end
 end
