@@ -55,19 +55,79 @@ describe "Administrator class" do
       all_costs_per_night.must_equal true
     end
 
-
-
   end
 
-  # describe "reserve_a_room method" do
-  #   before do
-  #     administrator = Hotel::Administrator.new
-  #     @first_reservation = administrator.reserve_a_room(1)
-  #   end
-  #
-  #   it ""
-  #
-  #
-  # end
+  describe "reserve_a_room method" do
+    before do
+      @administrator = Hotel::Administrator.new
+      @initial_reservations_length = @administrator.reservations.length
+      @first_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+    end
+
+    it "returns/creates a new instance of Reservation" do
+      @first_reservation.must_be_kind_of Hotel::Reservation
+    end
+
+    it "accurately accesses information of the new reservation" do
+      @first_reservation.reservation_id.must_equal 1
+      @first_reservation.date.must_equal Date.new(2017,2,3)
+      @first_reservation.number_of_nights.must_equal 3
+      @first_reservation.room_id.must_equal 9
+
+      @first_reservation.reservation_id.must_be_kind_of Integer
+      @first_reservation.date.must_be_kind_of Date
+      @first_reservation.number_of_nights.must_be_kind_of Integer
+      @first_reservation.room_id.must_be_kind_of Integer
+    end
+
+    it "adds the new Reservation to the collection of reservations in Administrator" do
+      #2nd reservation
+      @administrator.reserve_a_room(Date.new(2017,1,3), 2, 1)
+
+      #3rd reservation
+      @administrator.reserve_a_room(Date.new(2017,1,22), 3, 8)
+
+      @administrator.reservations.length.must_equal @initial_reservations_length + 3
+
+      @administrator.reservations[0].reservation_id.must_equal 1
+      @administrator.reservations[1].reservation_id.must_equal 2
+      @administrator.reservations[2].reservation_id.must_equal 3
+
+    end
+
+    it "raises an error if a date is nil or not a date" do
+      proc{@administrator.reserve_a_room(nil, 3, 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room("hello", 3, 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(3, 3, 9)}.must_raise ArgumentError
+    end
+
+    it "raises an error if number_of_nights is nil, zero, negative, float, or non-integer" do
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 0, 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), -9, 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), "hello", 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), nil, 9)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 6.5, 9)}.must_raise ArgumentError
+
+    end
+
+    it "raises an error is the room_id is not within range 1-20" do
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, 21)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, 0)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, -99)}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, "hello")}.must_raise ArgumentError
+
+      proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, nil)}.must_raise ArgumentError
+    end
+
+  end
 
 end

@@ -26,15 +26,15 @@ module Hotel
       return room_list
     end
 
-    def reservation_list #date
-      return @reservations
-    end
-
     def reserve_a_room(date, number_of_nights, room_id)
+
       check_date(date)
       check_number_of_nights(number_of_nights)
       check_room_id(room_id)
-      new_reservation = Reservation.new(date, number_of_nights, room_id)
+
+      reservation_id = @reservations.length + 1
+
+      new_reservation = Reservation.new(reservation_id, date, number_of_nights, room_id)
       @reservations << new_reservation
       return new_reservation
     end
@@ -54,7 +54,7 @@ module Hotel
     end
 
     def check_room_id(room_id)
-      if room_id != Integer || room_id < 1 || room_id > 20
+      if room_id.class != Integer || room_id < 1 || room_id > 20
         raise ArgumentError.new("Room ID entered does not exist (got #{room_id})")
       end
     end
@@ -63,6 +63,3 @@ module Hotel
   end
 
 end
-
-administrator = Hotel::Administrator.new
-puts administrator.room_list.first.room_id
