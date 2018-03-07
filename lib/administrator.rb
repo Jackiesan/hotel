@@ -31,20 +31,42 @@ module Hotel
       @rooms.find{ |room| room.room_id == room_id}
     end
 
+    # def room_available?(date, number_of_nights, room_id)
+    #   check_date(date)
+    #   check_room_id(room_id)
+    #   check_number_of_nights(number_of_nights)
+    #
+    #   searched_dates = convert_to_dates(date, number_of_nights)
+    #
+    #   searched_room = find_room(room_id)
+    #   occupied_nights = searched_room.booked_nights
+    #
+    #   overlap?(searched_dates, occupied_nights)
+    #
+    # end
+
     def reserve_a_room(date, number_of_nights, room_id)
 
       check_date(date)
       check_number_of_nights(number_of_nights)
-      # check_room_id(room_id)
 
       room = find_room(room_id)
+      searched_dates = convert_to_dates(date, number_of_nights)
+      booked_nights = room.booked_nights
 
-      reservation_id = @reservations.length + 1
+      if overlap?(searched_dates, booked_nights)
+        raise ArgumentError.new("Room is not available to book during these dates.")
+      else
 
-      new_reservation = Reservation.new(reservation_id, date, number_of_nights, room)
-      @reservations << new_reservation
-      return new_reservation
-    end
+        reservation_id = reservations.length + 1
+
+        new_reservation = Reservation.new(reservation_id, date, number_of_nights, room)
+        room.add_reservation(new_reservation)
+        reservations << new_reservation
+      end
+        return new_reservation
+
+      end
 
     private
 
@@ -66,15 +88,32 @@ module Hotel
       end
     end
 
+    def convert_to_dates(date, number_of_nights)
+      dates = [date]
+      i = 0
+      (number_of_nights - 1).times do
+        i += 1
+        dates << date + i
+      end
+      return dates
+    end
+
+    def overlap?(searched_dates, booked_nights)
+      if booked_nights == nil
+        false
+      else
+        searched_dates.any? {|date| booked_nights.include?(date) } ? true : false
+      end
+    end
 
   end
 
 end
-
+#
 administrator = Hotel::Administrator.new
-# rooms = administrator.room_list.each do |room|
-#   puts room.status
-# end
-# puts rooms.length
-puts administrator.room_list[0].room_id
-puts administrator.find_room(1).room_id
+reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 9)
+# room = administrator.find_room(9)
+# #
+# # # puts "#{reservation.block_of_dates}"
+# # # puts
+puts "#{administrator.reserve_a_room(Date.new(2017,3,5), 1, 9)}"
