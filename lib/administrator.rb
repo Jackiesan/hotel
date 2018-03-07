@@ -41,9 +41,8 @@ module Hotel
       check_number_of_nights(number_of_nights)
 
       searched_dates = convert_to_dates(date, number_of_nights)
-      available_rooms = []
 
-      rooms.select { |room| room.booked_nights == nil || room.booked_nights.include?(searched_dates) == true}
+      rooms.select { |room| room.booked_nights == nil || room.booked_nights.include?(searched_dates) }
 
     end
 
@@ -113,14 +112,20 @@ module Hotel
 end
 #
 administrator = Hotel::Administrator.new
-reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 9)
-# second_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
+reservation = administrator.reserve_a_room(Date.new(2017,2,7), 5, 9)
+second_reservation = administrator.reserve_a_room(Date.new(2017,2,7), 5, 10)
+third = administrator.reserve_a_room(Date.new(2017,2,6), 5, 11)
+
 
 room = administrator.find_room(9)
 # #
 # # # puts "#{reservation.block_of_dates}"
 # # # puts
-puts administrator.show_rooms_available(Date.new(2017,2,3), 2).length
+available_rooms = administrator.show_rooms_available(Date.new(2017,2,7), 2)
+
+available_rooms.each do |room|
+  puts room.room_id
+end
 
 # puts "#{room.booked_nights}"
 # puts "#{reservation.block_of_dates}"
