@@ -17,7 +17,6 @@ module Hotel
     end
 
     def room_list
-
       room_ids = (1..20).to_a
       room_list = []
       room_ids.each do |room_id|
@@ -31,19 +30,22 @@ module Hotel
       @rooms.find{ |room| room.room_id == room_id}
     end
 
-    # def room_available?(date, number_of_nights, room_id)
-    #   check_date(date)
-    #   check_room_id(room_id)
-    #   check_number_of_nights(number_of_nights)
-    #
-    #   searched_dates = convert_to_dates(date, number_of_nights)
-    #
-    #   searched_room = find_room(room_id)
-    #   occupied_nights = searched_room.booked_nights
-    #
-    #   overlap?(searched_dates, occupied_nights)
-    #
-    # end
+    def reservations_on_date(date)
+      check_date(date)
+
+      reservations.select { |reservation| reservation.block_of_dates.include?(date) == true }
+    end
+
+    def show_rooms_available(date, number_of_nights)
+      check_date(date)
+      check_number_of_nights(number_of_nights)
+
+      searched_dates = convert_to_dates(date, number_of_nights)
+      available_rooms = []
+
+      rooms.select { |room| room.booked_nights == nil || room.booked_nights.include?(searched_dates) == true}
+
+    end
 
     def reserve_a_room(date, number_of_nights, room_id)
 
@@ -64,9 +66,9 @@ module Hotel
         room.add_reservation(new_reservation)
         reservations << new_reservation
       end
-        return new_reservation
+      return new_reservation
 
-      end
+    end
 
     private
 
@@ -112,8 +114,15 @@ end
 #
 administrator = Hotel::Administrator.new
 reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 9)
-# room = administrator.find_room(9)
+# second_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
+
+room = administrator.find_room(9)
 # #
 # # # puts "#{reservation.block_of_dates}"
 # # # puts
-puts "#{administrator.reserve_a_room(Date.new(2017,3,5), 1, 9)}"
+puts administrator.show_rooms_available(Date.new(2017,2,3), 2).length
+
+# puts "#{room.booked_nights}"
+# puts "#{reservation.block_of_dates}"
+# puts administrator.rooms
+# puts "#{administrator.rooms}"

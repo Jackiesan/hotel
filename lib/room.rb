@@ -7,17 +7,12 @@ module Hotel
 
   class Room
 
-    attr_reader :room_id, :cost_per_night, :status, :reservations
+    attr_reader :room_id, :reservations, :booked_nights
 
-    def initialize(room_id, status: :AVAILABLE)
+    def initialize(room_id)
      @room_id = room_id
-     @cost_per_night = 200.00
-     @status = status
      @reservations = []
-    end
-
-    def change_to_unavailable(date, number_of_nights)
-
+     @booked_nights = booked_nights
     end
 
     def add_reservation(reservation)
