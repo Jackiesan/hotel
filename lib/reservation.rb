@@ -9,12 +9,12 @@ module Hotel
 
     attr_reader :reservation_id, :date, :number_of_nights, :room, :block_of_dates
 
-    def initialize(reservation_id, date, number_of_nights, room)
-      @reservation_id = reservation_id
-      @date = date
-      @number_of_nights = number_of_nights
-      @room = room
-      @block_of_dates = dates
+    def initialize(input)
+      @reservation_id = input[:reservation_id]
+      @date = input[:date]
+      @number_of_nights = input[:number_of_nights]
+      @room = [:room]
+      @block_of_dates = [:dates]
     end
 
     def total_cost

@@ -53,15 +53,23 @@ module Hotel
 
       room = find_room(room_id)
       searched_dates = convert_to_dates(date, number_of_nights)
-      booked_nights = room.booked_nights
+      rooms_booked_nights = room.booked_nights
 
-      if overlap?(searched_dates, booked_nights)
+      if overlap?(searched_dates, rooms_booked_nights)
         raise ArgumentError.new("Room is not available to book during these dates.")
       else
 
-        reservation_id = reservations.length + 1
+        # reservation_id = reservations.length + 1
 
-        new_reservation = Reservation.new(reservation_id, date, number_of_nights, room)
+        reservation_input = {
+          reservation_id: reservations.length + 1,
+          date: date,
+          number_of_nights: number_of_nights,
+          room: room,
+          block_of_dates: searched_dates,
+        }
+
+        new_reservation = Reservation.new(reservation_input)
         room.add_reservation(new_reservation)
         reservations << new_reservation
       end
@@ -110,24 +118,8 @@ module Hotel
   end
 
 end
-#
+
+
 administrator = Hotel::Administrator.new
-reservation = administrator.reserve_a_room(Date.new(2017,2,7), 5, 9)
-second_reservation = administrator.reserve_a_room(Date.new(2017,2,7), 5, 10)
-third = administrator.reserve_a_room(Date.new(2017,2,6), 5, 11)
-
-
-room = administrator.find_room(9)
-# #
-# # # puts "#{reservation.block_of_dates}"
-# # # puts
-available_rooms = administrator.show_rooms_available(Date.new(2017,2,7), 2)
-
-available_rooms.each do |room|
-  puts room.room_id
-end
-
-# puts "#{room.booked_nights}"
-# puts "#{reservation.block_of_dates}"
-# puts administrator.rooms
-# puts "#{administrator.rooms}"
+first = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+puts first

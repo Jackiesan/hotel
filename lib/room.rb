@@ -7,12 +7,11 @@ module Hotel
 
   class Room
 
-    attr_reader :room_id, :reservations, :booked_nights
+    attr_reader :room_id, :reservations
 
     def initialize(room_id)
      @room_id = room_id
      @reservations = []
-     @booked_nights = booked_nights
     end
 
     def add_reservation(reservation)
