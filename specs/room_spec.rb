@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'pry'
 
 
 describe "Room class" do
@@ -37,9 +38,9 @@ describe "Room class" do
         block_of_dates: [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
       }
 
-      first_reservation = Hotel::Reservation.new(first_reservation_info)
+      @first_reservation = Hotel::Reservation.new(first_reservation_info)
 
-      @room.add_reservation(first_reservation)
+      @room.add_reservation(@first_reservation)
     end
 
     it "adds a new reservation object to the array of the room's reservations" do
@@ -58,7 +59,8 @@ describe "Room class" do
 
       @room.add_reservation(second_reservation)
 
-      @room.reservations.length.must_equal 2
+      @room.reservations.must_include @first_reservation
+      @room.reservations.must_include second_reservation
 
       all_reservations = @room.reservations.all? { |reservation| reservation.class == Hotel::Reservation }
 
@@ -111,6 +113,23 @@ describe "Room class" do
       room.booked_nights.length.must_equal 0
       room.booked_nights.must_be_kind_of Array
 
+    end
+
+    it "is able to update booked nights array if more reservations are added" do
+
+      second_reservation_info = {
+        reservation_id: 2,
+        date: Date.new(2017,2,6),
+        number_of_nights: 2,
+        room: @room,
+        block_of_dates: [Date.new(2017,2,6), Date.new(2017,2,7)]
+      }
+
+      second_reservation = Hotel::Reservation.new(second_reservation_info)
+
+      @room.add_reservation(second_reservation)
+      @room.booked_nights.length.must_equal 5
+      @room.booked_nights.must_include Date.new(2017,2,6) && Date.new(2017,2,7)
     end
   end
 

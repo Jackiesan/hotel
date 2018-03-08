@@ -21,17 +21,5 @@ module Hotel
       return 200.00 * @number_of_nights
     end
 
-    # def dates
-    #   dates = [date]
-    #   i = 0
-    #   (number_of_nights - 1).times do
-    #     i += 1
-    #     dates << date + i
-    #   end
-    #   return dates
-    # end
-
-
-
   end
 end
