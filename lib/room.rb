@@ -24,9 +24,15 @@ module Hotel
 
     def booked_nights
       not_available = []
+
+      if reservations.empty?
+        return not_available
+      else
       @reservations.each do |reservation|
-        not_available << reservation.block_of_dates
+          not_available << reservation.block_of_dates
+        end
       end
+
       return not_available[0]
 
     end

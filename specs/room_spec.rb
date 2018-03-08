@@ -25,4 +25,93 @@ describe "Room class" do
 
   end
 
+  describe "add_reservation(reservation) method" do
+    before do
+      @room = Hotel::Room.new(4)
+
+      first_reservation_info = {
+        reservation_id: 1,
+        date: Date.new(2017,2,3),
+        number_of_nights: 3,
+        room: @room,
+        block_of_dates: [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
+      }
+
+      first_reservation = Hotel::Reservation.new(first_reservation_info)
+
+      @room.add_reservation(first_reservation)
+    end
+
+    it "adds a new reservation object to the array of the room's reservations" do
+
+      @room.reservations.length.must_equal 1
+
+      second_reservation_info = {
+        reservation_id: 2,
+        date: Date.new(2017,2,8),
+        number_of_nights: 2,
+        room: @room,
+        block_of_dates: [Date.new(2017,2,8), Date.new(2017,2,9)]
+      }
+
+      second_reservation = Hotel::Reservation.new(second_reservation_info)
+
+      @room.add_reservation(second_reservation)
+
+      @room.reservations.length.must_equal 2
+
+      all_reservations = @room.reservations.all? { |reservation| reservation.class == Hotel::Reservation }
+
+      all_reservations.must_equal true
+    end
+
+    it "raises an argument error if an object other than a Reservation is added" do
+
+      proc{ @room.add_reservation(1) }.must_raise ArgumentError
+
+      proc{ @room.add_reservation("HELLO") }.must_raise ArgumentError
+
+      proc{ @room.add_reservation(Hotel::Room.new(2)) }.must_raise ArgumentError
+
+    end
+  end
+
+  describe "booked_nights method" do
+
+    before do
+      @room = Hotel::Room.new(4)
+
+      first_reservation_info = {
+        reservation_id: 1,
+        date: Date.new(2017,2,3),
+        number_of_nights: 3,
+        room: @room,
+        block_of_dates: [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
+      }
+
+      first_reservation = Hotel::Reservation.new(first_reservation_info)
+
+      @room.add_reservation(first_reservation)
+
+    end
+
+    it "returns an array of dates in which the room is booked" do
+
+      @room.booked_nights.must_be_kind_of Array
+
+      all_booked_nights = @room.booked_nights.all? { |booked_date| booked_date.class == Date }
+      all_booked_nights.must_equal true
+
+      @room.booked_nights.length.must_equal 3
+
+    end
+
+    it "returns an empty array if there are no reservations" do
+      room = Hotel::Room.new(8)
+      room.booked_nights.length.must_equal 0
+      room.booked_nights.must_be_kind_of Array
+
+    end
+  end
+
 end
