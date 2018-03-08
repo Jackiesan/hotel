@@ -13,23 +13,23 @@ module Hotel
       @reservation_id = input[:reservation_id]
       @date = input[:date]
       @number_of_nights = input[:number_of_nights]
-      @room = [:room]
-      @block_of_dates = [:dates]
+      @room = input[:room]
+      @block_of_dates = input[:block_of_dates]
     end
 
     def total_cost
       return 200.00 * @number_of_nights
     end
 
-    def dates
-      dates = [date]
-      i = 0
-      (number_of_nights - 1).times do
-        i += 1
-        dates << date + i
-      end
-      return dates
-    end
+    # def dates
+    #   dates = [date]
+    #   i = 0
+    #   (number_of_nights - 1).times do
+    #     i += 1
+    #     dates << date + i
+    #   end
+    #   return dates
+    # end
 
 
 

@@ -120,6 +120,6 @@ module Hotel
 end
 
 
-administrator = Hotel::Administrator.new
-first = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
-puts first
+# administrator = Hotel::Administrator.new
+# first = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+# puts first
