@@ -22,9 +22,11 @@ describe "Administrator class" do
 
     end
 
-    it "establishes rooms and reservations as array of objects" do
+    it "establishes rooms as array of objects, reservations initializes as empty array" do
       all_rooms =  @administrator.rooms.all? { |room| room.class == Hotel::Room}
       all_rooms.must_equal true
+
+      @administrator.reservations.must_be_empty
 
     end
   end
@@ -45,12 +47,44 @@ describe "Administrator class" do
       @room_list.first.room_id.must_equal 1
       @room_list.last.room_id.must_equal 20
       @room_list.length.must_equal 20
+
+      all_room_reservations = @room_list.all? { |room| room.reservations.class == Array }
+      all_room_reservations.must_equal true
     end
 
     it "stores room id as an integer within range 1 and 20" do
       all_room_ids =  @room_list.all? { |room| (room.room_id.class == Integer) && (room.room_id > 0 || room.room_id < 20) }
       all_room_ids.must_equal true
       @room_list.length.must_equal 20
+    end
+
+  end
+
+  describe "find_room(room_id) method" do
+
+    before do
+      @administrator = Hotel::Administrator.new
+    end
+
+    it "raises error if room id entered is not within 1 - 20" do
+      proc { @administrator.find_room(21) }.must_raise ArgumentError
+
+      proc { @administrator.find_room(0) }.must_raise ArgumentError
+
+      proc { @administrator.find_room(-56) }.must_raise ArgumentError
+
+      proc { @administrator.find_room("hello") }.must_raise ArgumentError
+    end
+
+    it "returns the room object corresponding to the room_id number entered" do
+      room_id = 0
+      rooms_searched = []
+      20.times do
+        rooms_searched << @administrator.find_room(room_id += 1)
+      end
+
+      rooms_found = rooms_searched.all? { |room| room.class == Hotel::Room}
+      rooms_found.must_equal true
     end
 
   end
