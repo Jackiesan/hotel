@@ -89,11 +89,70 @@ describe "Administrator class" do
 
   end
 
+  describe "reservations_on_date method" do
+    it "returns list of Reservations on a specific date" do
+
+      administrator = Hotel::Administrator.new
+      first_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+      second_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
+      administrator.reserve_a_room(Date.new(2017,2,6), 5, 12)
+
+      administrator.reservations_on_date(Date.new(2017,2,3)).length.must_equal 2
+
+      administrator.reservations_on_date(Date.new(2017,2,3)).must_include first_reservation && second_reservation
+
+    end
+
+    it "returns error if the argument passed is not an object of Date" do
+      administrator = Hotel::Administrator.new
+      proc { administrator.reservations_on_date(343) }.must_raise ArgumentError
+
+      proc { administrator.reservations_on_date(Hotel::Room.new(1)) }.must_raise ArgumentError
+
+    end
+  end
+
+  describe "show_rooms_available method" do
+
+    before do
+      @administrator = Hotel::Administrator.new
+
+      @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+      @administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
+      @administrator.reserve_a_room(Date.new(2017,2,6), 5, 9)
+
+    end
+
+    it "returns array of room objects that are available during date range" do
+
+      rooms_available = @administrator.show_rooms_available(Date.new(2017,2,3), 3)
+
+      rooms_available.must_be_kind_of Array
+
+      list_of_rooms = rooms_available.all? { |room| room.class == Hotel::Room }
+      list_of_rooms.must_equal true
+
+      rooms_available.length.must_equal 18
+
+    end
+
+    it "raises argument error is 1st argument is not Date object or if number_of_nights is not an integer" do
+      proc { @administrator.show_rooms_available("tuesday", 3) }.must_raise ArgumentError
+
+      proc { @administrator.show_rooms_available(Date.new(2017,2,3), 0) }.must_raise ArgumentError
+    end
+
+    it "returns 20 rooms available if there are no existing reservations" do
+      new_administrator = Hotel::Administrator.new
+
+      new_administrator.show_rooms_available(Date.new(2017,3,2), 1).length.must_equal 20
+    end
+  end
+
   describe "reserve_a_room method" do
     before do
       @administrator = Hotel::Administrator.new
       @room = @administrator.room_list[8]
-      @initial_reservations_length = @administrator.reservations.length
       @first_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
     end
 
@@ -105,7 +164,7 @@ describe "Administrator class" do
       @first_reservation.reservation_id.must_equal 1
       @first_reservation.date.must_equal Date.new(2017,2,3)
       @first_reservation.number_of_nights.must_equal 3
-      @first_reservation.room.room_id.must_equal @room.room_id
+      @first_reservation.room.room_id.must_equal 9
 
       @first_reservation.reservation_id.must_be_kind_of Integer
       @first_reservation.date.must_be_kind_of Date
@@ -114,17 +173,23 @@ describe "Administrator class" do
     end
 
     it "adds the new Reservation to the collection of reservations in Administrator" do
-      #2nd reservation
-      @administrator.reserve_a_room(Date.new(2017,1,3), 2, 1)
+      second_reservation = @administrator.reserve_a_room(Date.new(2017,1,3), 2, 1)
 
-      #3rd reservation
+      third_reservation =
       @administrator.reserve_a_room(Date.new(2017,1,22), 3, 8)
 
-      @administrator.reservations.length.must_equal @initial_reservations_length + 3
+      @administrator.reservations.length.must_equal 3
 
-      @administrator.reservations[0].reservation_id.must_equal 1
-      @administrator.reservations[1].reservation_id.must_equal 2
-      @administrator.reservations[2].reservation_id.must_equal 3
+      @administrator.reservations.must_include @first_reservation
+      @administrator.reservations.must_include second_reservation
+      @administrator.reservations.must_include third_reservation
+    end
+
+    it "raises an error if new reservation overlaps with an existing reservation" do
+      proc { @administrator.reserve_a_room(Date.new(2017,2,3), 2, 9) }.must_raise ArgumentError
+
+      proc { @administrator.reserve_a_room(Date.new(2017,2,5), 2, 9) }.must_raise ArgumentError
+
 
     end
 

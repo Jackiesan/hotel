@@ -42,7 +42,7 @@ module Hotel
 
       searched_dates = convert_to_dates(date, number_of_nights)
 
-      rooms.select { |room| room.booked_nights == nil || room.booked_nights.include?(searched_dates) }
+      rooms.reject { |room| overlap?(searched_dates, room.booked_nights)}
 
     end
 
@@ -58,8 +58,6 @@ module Hotel
       if overlap?(searched_dates, rooms_booked_nights)
         raise ArgumentError.new("Room is not available to book during these dates.")
       else
-
-        # reservation_id = reservations.length + 1
 
         reservation_input = {
           reservation_id: reservations.length + 1,
@@ -108,8 +106,8 @@ module Hotel
     end
 
     def overlap?(searched_dates, booked_nights)
-      if booked_nights == nil
-        false
+      if booked_nights.length == 0
+        return false
       else
         searched_dates.any? {|date| booked_nights.include?(date) } ? true : false
       end
@@ -121,5 +119,8 @@ end
 
 
 # administrator = Hotel::Administrator.new
-# first = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
-# puts first
+# administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+# room = administrator.find_room(9)
+# puts room.booked_nights
+# # puts first
+# puts administrator.show_rooms_available(Date.new(2017,2,3), 1).length
