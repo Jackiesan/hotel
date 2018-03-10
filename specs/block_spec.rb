@@ -14,7 +14,7 @@ describe "Block class" do
 
       block_info = {
         block_id: 1,
-        date: Date.new(2017,3,10),
+        start_date: Date.new(2017,3,10),
         number_of_nights: 2,
         rooms: [first_room, second_room, third_room, fourth_room, fifth_room]
       }
@@ -27,12 +27,12 @@ describe "Block class" do
     end
 
     it "establishes the base data structures when instantiated" do
-      [:block_id, :date, :number_of_nights, :rooms].each do |prop|
+      [:block_id, :start_date, :number_of_nights, :rooms].each do |prop|
         @block.must_respond_to prop
       end
 
       @block.block_id.must_be_kind_of Integer
-      @block.date.must_be_kind_of Date
+      @block.start_date.must_be_kind_of Date
       @block.number_of_nights.must_be_kind_of Integer
       @block.rooms.must_be_kind_of Array
     end

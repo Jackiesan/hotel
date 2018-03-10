@@ -8,11 +8,12 @@ module Hotel
 
   class Room
 
-    attr_reader :room_id, :reservations
+    attr_reader :room_id, :reservations, :blocks
 
     def initialize(room_id)
      @room_id = room_id
      @reservations = []
+     @blocks = []
     end
 
     def add_reservation(reservation)
@@ -23,14 +24,27 @@ module Hotel
       @reservations << reservation
     end
 
-    def booked_nights
+    def add_block(block)
+      if block.class != Hotel::Block
+        raise ArgumentError.new("Can only add a Block instance to block collection")
+      end
 
-      if reservations.empty?
+      @blocks << block
+    end
+
+    def unavailable_nights
+
+      if reservations.empty? && blocks.empty?
         return []
       else
         not_available = []
-      reservations.each do |reservation|
+
+        reservations.each do |reservation|
           not_available << reservation.block_of_dates
+        end
+
+        blocks.each do |block|
+          not_available << block.dates_of_block
         end
 
         return not_available.flatten!

@@ -15,12 +15,13 @@ describe "Room class" do
     end
 
     it "establishes the base data structures when instantiated" do
-      [:room_id, :reservations].each do |prop|
+      [:room_id, :reservations, :blocks].each do |prop|
         @room.must_respond_to prop
       end
 
       @room.room_id.must_be_kind_of Integer
       @room.reservations.must_be_kind_of Array
+      @room.blocks.must_be_kind_of Array
 
     end
 
@@ -78,7 +79,7 @@ describe "Room class" do
     end
   end
 
-  describe "booked_nights method" do
+  describe "unavailable_nights method" do
 
     before do
       @room = Hotel::Room.new(4)
@@ -99,19 +100,19 @@ describe "Room class" do
 
     it "returns an array of dates in which the room is booked" do
 
-      @room.booked_nights.must_be_kind_of Array
+      @room.unavailable_nights.must_be_kind_of Array
 
-      all_booked_nights = @room.booked_nights.all? { |booked_date| booked_date.class == Date }
-      all_booked_nights.must_equal true
+      all_unavailable_nights = @room.unavailable_nights.all? { |unavailable_night| unavailable_night.class == Date }
+      all_unavailable_nights.must_equal true
 
-      @room.booked_nights.length.must_equal 3
+      @room.unavailable_nights.length.must_equal 3
 
     end
 
     it "returns an empty array if there are no reservations" do
       room = Hotel::Room.new(8)
-      room.booked_nights.length.must_equal 0
-      room.booked_nights.must_be_kind_of Array
+      room.unavailable_nights.length.must_equal 0
+      room.unavailable_nights.must_be_kind_of Array
 
     end
 
@@ -128,8 +129,8 @@ describe "Room class" do
       second_reservation = Hotel::Reservation.new(second_reservation_info)
 
       @room.add_reservation(second_reservation)
-      @room.booked_nights.length.must_equal 5
-      @room.booked_nights.must_include Date.new(2017,2,6) && Date.new(2017,2,7)
+      @room.unavailable_nights.length.must_equal 5
+      @room.unavailable_nights.must_include Date.new(2017,2,6) && Date.new(2017,2,7)
     end
   end
 
