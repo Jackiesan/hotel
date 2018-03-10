@@ -2,6 +2,7 @@ require 'time'
 require 'pry'
 require 'awesome_print'
 
+require_relative 'block'
 
 module Hotel
 

@@ -5,6 +5,7 @@ require 'awesome_print'
 
 require_relative 'room'
 require_relative 'reservation'
+require_relative 'block'
 
 module Hotel
   class Administrator
@@ -118,7 +119,9 @@ module Hotel
 end
 
 
-# administrator = Hotel::Administrator.new
+administrator = Hotel::Administrator.new
+#
+puts
 # administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
 # room = administrator.find_room(9)
 # puts room.booked_nights
