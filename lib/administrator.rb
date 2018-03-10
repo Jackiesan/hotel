@@ -10,11 +10,12 @@ require_relative 'block'
 module Hotel
   class Administrator
 
-    attr_reader :rooms, :reservations
+    attr_reader :rooms, :reservations, :blocks
 
     def initialize
       @rooms = room_list
       @reservations = []
+      @blocks = []
     end
 
     def room_list
@@ -75,6 +76,17 @@ module Hotel
       return new_reservation
 
     end
+    #
+    # def reserve_block(date, number_of_nights, num_rooms)
+    #
+    #   block_info = {
+    #     block_id: blocks.length + 1,
+    #     date: Date.new(2017,3,10),
+    #     number_of_nights: 2,
+    #     rooms: [first_room, second_room, third_room, fourth_room, fifth_room]
+    #   }
+    #
+    # end
 
     private
 

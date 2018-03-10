@@ -15,5 +15,6 @@ module Hotel
     @rooms = []
   end
 
+
   end
 end

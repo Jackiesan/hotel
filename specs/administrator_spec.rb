@@ -13,12 +13,13 @@ describe "Administrator class" do
     end
 
     it "establishes the base data structures when instantiated" do
-      [:rooms, :reservations].each do |prop|
+      [:rooms, :reservations, :blocks].each do |prop|
         @administrator.must_respond_to prop
       end
 
       @administrator.rooms.must_be_kind_of Array
       @administrator.reservations.must_be_kind_of Array
+      @administrator.blocks.must_be_kind_of Array
 
     end
 
