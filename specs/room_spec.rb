@@ -46,8 +46,6 @@ describe "Room class" do
 
     it "adds a new reservation object to the array of the room's reservations" do
 
-      @room.reservations.length.must_equal 1
-
       second_reservation_info = {
         reservation_id: 2,
         date: Date.new(2017,2,8),
@@ -75,6 +73,37 @@ describe "Room class" do
       proc{ @room.add_reservation("HELLO") }.must_raise ArgumentError
 
       proc{ @room.add_reservation(Hotel::Room.new(2)) }.must_raise ArgumentError
+
+    end
+  end
+
+  describe "add_block method" do
+
+    before do
+      administrator = Hotel::Administrator.new
+      @block = administrator.create_block(Date.new(2017,3,10), 3, 4)
+      @rooms_of_block = @block.rooms
+
+    end
+
+    it "adds instance of block to block collection of each room" do
+      @rooms_of_block.each do |room|
+        room.add_block(@block)
+      end
+      all_rooms = @rooms_of_block.all? { |room| room.blocks.include? @block }
+      all_rooms.must_equal true
+    end
+
+    it "raises an error if argument is not an instance of a Block" do
+      proc {
+      @rooms_of_block.each do |room|
+        room.add_block(3)
+      end }.must_raise ArgumentError
+
+      proc {
+      @rooms_of_block.each do |room|
+        room.add_block("new_block")
+      end }.must_raise ArgumentError
 
     end
   end
@@ -111,7 +140,7 @@ describe "Room class" do
 
     it "returns an empty array if there are no reservations" do
       room = Hotel::Room.new(8)
-      room.unavailable_nights.length.must_equal 0
+      room.unavailable_nights.must_be_empty
       room.unavailable_nights.must_be_kind_of Array
 
     end
@@ -132,6 +161,18 @@ describe "Room class" do
       @room.unavailable_nights.length.must_equal 5
       @room.unavailable_nights.must_include Date.new(2017,2,6) && Date.new(2017,2,7)
     end
+
+    it "includes dates from a block (sets as unavailable_nights to the public)" do
+      administrator = Hotel::Administrator.new
+
+      block = administrator.create_block(Date.new(2017,3,10), 3, 4)
+
+      rooms_for_block = block.rooms
+
+      rooms_for_block.all? { |room| room.unavailable_nights.include? Date.new(2017,3,10) && Date.new(2017,3,11) && Date.new(2017,3,11) }
+
+    end
+
   end
 
 end
