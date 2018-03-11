@@ -28,6 +28,7 @@ describe "Administrator class" do
       all_rooms.must_equal true
 
       @administrator.reservations.must_be_empty
+      @administrator.blocks.must_be_empty
 
     end
   end
@@ -44,19 +45,21 @@ describe "Administrator class" do
       all_rooms.must_equal true
     end
 
-    it "accurately loads the information of the room" do
+    it "can access the information of the rooms" do
       @room_list.first.room_id.must_equal 1
       @room_list.last.room_id.must_equal 20
       @room_list.length.must_equal 20
 
       all_room_reservations = @room_list.all? { |room| room.reservations.class == Array }
       all_room_reservations.must_equal true
+
+      all_room_blocks = @room_list.all? { |room| room.blocks.class == Array }
+      all_room_reservations.must_equal true
     end
 
     it "stores room id as an integer within range 1 and 20" do
       all_room_ids =  @room_list.all? { |room| (room.room_id.class == Integer) && (room.room_id > 0 || room.room_id < 20) }
       all_room_ids.must_equal true
-      @room_list.length.must_equal 20
     end
 
   end
@@ -86,29 +89,49 @@ describe "Administrator class" do
 
       rooms_found = rooms_searched.all? { |room| room.class == Hotel::Room}
       rooms_found.must_equal true
+
     end
 
   end
 
   describe "reservations_on_date method" do
+
+    before do
+      @administrator = Hotel::Administrator.new
+
+      #room with a check out date of 2/6/17
+      @first_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
+
+      @second_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
+
+      #same room as @first_reservation but checking in 2/6/17
+      @third_reservation = @administrator.reserve_a_room(Date.new(2017,2,6), 1, 9)
+
+    end
     it "returns list of Reservations on a specific date" do
 
-      administrator = Hotel::Administrator.new
-      first_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
-      second_reservation = administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
-      administrator.reserve_a_room(Date.new(2017,2,6), 5, 12)
+      reservation_list = @administrator.reservations_on_date(Date.new(2017,2,6))
 
-      administrator.reservations_on_date(Date.new(2017,2,3)).length.must_equal 2
+      reservation_list.length.must_equal 3
 
-      administrator.reservations_on_date(Date.new(2017,2,3)).must_include first_reservation && second_reservation
+      reservation_list.must_include @first_reservation && @second_reservation && @third_reservation
+
+      reservation_list.all? { |reservation| reservation.class == Hotel::Reservation }
 
     end
 
     it "returns error if the argument passed is not an object of Date" do
-      administrator = Hotel::Administrator.new
-      proc { administrator.reservations_on_date(343) }.must_raise ArgumentError
 
-      proc { administrator.reservations_on_date(Hotel::Room.new(1)) }.must_raise ArgumentError
+      proc { @administrator.reservations_on_date(343) }.must_raise ArgumentError
+
+      proc { @administrator.reservations_on_date(Hotel::Room.new(1)) }.must_raise ArgumentError
+
+    end
+
+    it "returns empty array if no reservations exist for that date" do
+      list_of_reservations = @administrator.reservations_on_date(Date.new(2017,3,10))
+
+      list_of_reservations.must_be_empty
 
     end
   end

@@ -35,7 +35,7 @@ module Hotel
     def reservations_on_date(date)
       check_date(date)
 
-      reservations.select { |reservation| reservation.block_of_dates.include?(date) == true }
+      reservations.select { |reservation| (reservation.check_out_date == date) ||  (reservation.block_of_dates.include?(date) == true) }
     end
 
     def show_rooms_available(date, number_of_nights)
@@ -212,31 +212,6 @@ module Hotel
 
 end
 
-#
-# administrator = Hotel::Administrator.new
-#
-# block = administrator.create_block(Date.new(2017,3,10), 2, 5)
-# puts block
-# block.rooms.each do |room|
-#   puts room
-#   puts room.room_id
-# end
-#
-# puts "dates of block: #{block.dates_of_block}"
-#
-# administrator.reserve_room_from_block(1)
-# administrator.reserve_room_from_block(1)
-# puts administrator.reservations.length
-#
-# # puts "load_available_rooms: #{block.load_available_rooms.length}"
-# puts "Blocks reservations #{block.reservations.length}"
-# # binding.pry
-# puts "Rooms avaialble? #{administrator.rooms_from_block_available?(1)}"
-# administrator.reserve_room_from_block(1)
-# puts "added new reservation"
-# puts "Rooms avaialble? #{administrator.rooms_from_block_available?(1)}"
-# puts block.reservations.length
-# puts block.rooms.length
-# puts administrator.reservations.length
+administrator = Hotel::Administrator.new
 
-# puts "reservation_id: #{new_reservation.reservation_id}, room number: #{new_reservation.room.room_id}, dates room is booked for #{new_reservation.block_of_dates}, cost: #{new_reservation.total_cost}, number of reservations in admin: #{administrator.reservations.length}, in rooms reservations? #{room_1.reservations} "
+puts administrator.reservations_on_date(Date.new(2017,3,10)).class
