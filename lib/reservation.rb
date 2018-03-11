@@ -7,7 +7,7 @@ require 'time'
 module Hotel
   class Reservation
 
-    attr_reader :reservation_id, :start_date, :number_of_nights, :room, :block_of_dates
+    attr_reader :reservation_id, :start_date, :number_of_nights, :room, :block_of_dates, :room_rate
 
     def initialize(input)
       @reservation_id = input[:reservation_id]
@@ -15,10 +15,11 @@ module Hotel
       @number_of_nights = input[:number_of_nights]
       @room = input[:room]
       @block_of_dates = input[:block_of_dates]
+      @room_rate = input[:room_rate]
     end
 
     def total_cost
-      return 200.00 * @number_of_nights
+      return room_rate * @number_of_nights
     end
 
   end

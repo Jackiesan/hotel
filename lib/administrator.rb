@@ -67,6 +67,7 @@ module Hotel
           number_of_nights: number_of_nights,
           room: room,
           block_of_dates: searched_dates,
+          room_rate: 200.00
         }
 
         new_reservation = Reservation.new(reservation_input)
@@ -130,7 +131,8 @@ module Hotel
           start_date: block.start_date,
           number_of_nights: block.number_of_nights,
           room: room,
-          block_of_dates: block.dates_of_block
+          block_of_dates: block.dates_of_block,
+          room_rate: 175.00
         }
 
 

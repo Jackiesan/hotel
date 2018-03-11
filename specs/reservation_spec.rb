@@ -47,7 +47,8 @@ describe "Reservation class" do
         date: Date.new(2017,2,3),
         number_of_nights: 3,
         room: administrator.find_room(1),
-        block_of_dates: [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
+        block_of_dates: [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)],
+        room_rate: 200.00
 
       }
 
