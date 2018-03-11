@@ -54,7 +54,7 @@ describe "Administrator class" do
       all_room_reservations.must_equal true
 
       all_room_blocks = @room_list.all? { |room| room.blocks.class == Array }
-      all_room_reservations.must_equal true
+      all_room_blocks.must_equal true
     end
 
     it "stores room id as an integer within range 1 and 20" do
@@ -194,7 +194,7 @@ describe "Administrator class" do
   describe "reserve_a_room method" do
     before do
       @administrator = Hotel::Administrator.new
-      @room = @administrator.room_list[8]
+      @room = @administrator.find_room(9)
       @first_reservation = @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
     end
 
@@ -206,12 +206,18 @@ describe "Administrator class" do
       @first_reservation.reservation_id.must_equal 1
       @first_reservation.start_date.must_equal Date.new(2017,2,3)
       @first_reservation.number_of_nights.must_equal 3
-      @first_reservation.room.room_id.must_equal 9
+      @first_reservation.room.must_equal @room
+      @first_reservation.block_of_dates.must_equal [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
+      @first_reservation.room_rate.must_equal 200.00
+      @first_reservation.check_out_date.must_equal Date.new(2017,2,6)
 
       @first_reservation.reservation_id.must_be_kind_of Integer
       @first_reservation.start_date.must_be_kind_of Date
       @first_reservation.number_of_nights.must_be_kind_of Integer
       @first_reservation.room.must_be_kind_of Hotel::Room
+      @first_reservation.block_of_dates.must_be_kind_of Array
+      @first_reservation.room_rate.must_be_kind_of Float
+      @first_reservation.check_out_date.must_be_kind_of Date
     end
 
     it "adds the new Reservation to the collection of reservations in Administrator" do
@@ -225,6 +231,11 @@ describe "Administrator class" do
       @administrator.reservations.must_include @first_reservation
       @administrator.reservations.must_include second_reservation
       @administrator.reservations.must_include third_reservation
+    end
+
+    it "adds the new reservation to the collection of Reservations of the Room" do
+      @room.reservations.must_include @first_reservation
+      @room.reservations.length.must_equal 1
     end
 
     it "raises an error if new reservation overlaps with an existing reservation" do
@@ -256,7 +267,7 @@ describe "Administrator class" do
 
     end
 
-    it "raises an error is the room_id is not within range 1-20" do
+    it "raises an error if the room_id is not within range 1-20" do
       proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, 21)}.must_raise ArgumentError
 
       proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, 0)}.must_raise ArgumentError
@@ -266,6 +277,45 @@ describe "Administrator class" do
       proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, "hello")}.must_raise ArgumentError
 
       proc{@administrator.reserve_a_room(Date.new(2017,2,3), 3, nil)}.must_raise ArgumentError
+    end
+
+    it "raises an error if room is on hold for a block" do
+      block = @administrator.create_block(Date.new(2017,3,10), 2, 2)
+      rooms = block.rooms
+
+      proc { @administrator.reserve_a_room(Date.new(2017,3,10), 1, rooms[0]) }.must_raise ArgumentError
+
+      proc { @administrator.reserve_a_room(Date.new(2017,3,10), 1, rooms[1]) }.must_raise ArgumentError
+
+    end
+
+  end
+
+  describe "create_block method" do
+
+    describe "Block instantiation" do
+
+      before do
+        @administrator = Hotel::Administrator.new
+        @block = @administrator.create_block(Date.new(2017,3,10), 3, 4)
+      end
+
+      it "is an instance of Administrator" do
+        @block.must_be_kind_of Hotel::Block
+      end
+
+      it "establishes the base data structures when instantiated" do
+        [:block_id, :start_date, :number_of_nights, :rooms, :reservations].each do |prop|
+          @block.must_respond_to prop
+        end
+
+        @block.block_id.must_be_kind_of Integer
+        @block.start_date.must_be_kind_of Date
+        @block.number_of_nights.must_be_kind_of Integer
+        @block.rooms.must_be_kind_of Array
+        @block.reservations.must_be_kind_of Array
+
+      end
     end
 
   end
