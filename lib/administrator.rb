@@ -148,6 +148,7 @@ module Hotel
     end
 
     def rooms_from_block_available?(block_id)
+      check_block_id(block_id)
       block = find_block(block_id)
 
       if block.rooms.length == block.reservations.length
@@ -218,7 +219,3 @@ module Hotel
   end
 
 end
-
-administrator = Hotel::Administrator.new
-
-puts administrator.reservations_on_date(Date.new(2017,3,10)).class

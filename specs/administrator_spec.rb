@@ -373,6 +373,96 @@ describe "Administrator class" do
 
   end
 
+  describe "reserve_room_from_block method" do
+    before do
+      @administrator = Hotel::Administrator.new
+
+      @block = @administrator.create_block(Date.new(2017,4,28), 3, 4)
+
+      #block id is equal to 1
+
+      @first_reservation = @administrator.reserve_room_from_block(1)
+
+      @reserved_room = @first_reservation.room
+    end
+
+    it "creates new reservation for specific block" do
+
+      @first_reservation.must_be_kind_of Hotel::Reservation
+
+      [:reservation_id, :start_date, :number_of_nights, :room, :block_of_dates, :room_rate, :check_out_date].each do |prop|
+        @first_reservation.must_respond_to prop
+      end
+
+    end
+
+    it "adds reservation to reservation collection of the block" do
+      @block.reservations.must_include @first_reservation
+      @block.reservations.length.must_equal 1
+    end
+
+    it "adds reservation to the reservation collection of the room" do
+      @reserved_room.reservations.must_include @first_reservation
+    end
+
+    it "add reservations to the reservation collection of the administrator" do
+      @administrator.reservations.must_include @first_reservation
+    end
+
+    it "gives a discount of $25 per night for the room rate" do
+      @first_reservation.room_rate.must_equal 175.00
+      @first_reservation.total_cost.must_equal 525.00
+    end
+
+    it "saves the reservation dates as the same date range of the block" do
+      @first_reservation.block_of_dates.must_equal @block.dates_of_block
+    end
+
+    it "raises an argument error if all rooms from block are reserved" do
+      # num rooms in block 1 are 4 rooms
+      # reserving 3 more to book all
+      3.times do
+        @administrator.reserve_room_from_block(1)
+      end
+
+      proc { @administrator.reserve_room_from_block(1) }.must_raise ArgumentError
+    end
+
+    it "raises an error if block id does not exist" do
+      proc { @administrator.reserve_room_from_block(223) }.must_raise ArgumentError
+    end
+
+  end
+
+  describe "rooms_from_block_available?(block_id) method" do
+
+    before do
+      @administrator = Hotel::Administrator.new
+
+      # block ID is 1 since its first block
+      @administrator.create_block(Date.new(2017,4,28), 3, 4)
+
+      3.times do
+        @administrator.reserve_room_from_block(1)
+      end
+    end
+
+    it "returns true if given block has rooms available for reservation" do
+      @administrator.rooms_from_block_available?(1).must_equal true
+    end
+
+    it "returns false if given block has no rooms avaialable for reservation" do
+      # reserving last room from block 1
+      @administrator.reserve_room_from_block(1)
+
+      @administrator.rooms_from_block_available?(1).must_equal false
+    end
+
+    it "raises an argument error if block id does not exist" do
+      proc { @administrator.rooms_from_block_available?(223) }.must_raise ArgumentError
+    end
+
+  end
 
 
 
