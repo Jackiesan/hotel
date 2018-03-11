@@ -293,31 +293,47 @@ describe "Administrator class" do
 
   describe "create_block method" do
 
-    describe "Block instantiation" do
+    before do
+      @administrator = Hotel::Administrator.new
+      @block = @administrator.create_block(Date.new(2017,3,10), 3, 4)
+    end
 
-      before do
-        @administrator = Hotel::Administrator.new
-        @block = @administrator.create_block(Date.new(2017,3,10), 3, 4)
+    it "is an instance of Block" do
+      @block.must_be_kind_of Hotel::Block
+    end
+
+    it "establishes the base data structures when block is instantiated" do
+      [:block_id, :start_date, :number_of_nights, :rooms, :reservations].each do |prop|
+        @block.must_respond_to prop
       end
 
-      it "is an instance of Administrator" do
-        @block.must_be_kind_of Hotel::Block
-      end
+      @block.block_id.must_be_kind_of Integer
+      @block.start_date.must_be_kind_of Date
+      @block.number_of_nights.must_be_kind_of Integer
+      @block.rooms.must_be_kind_of Array
+      @block.reservations.must_be_kind_of Array
 
-      it "establishes the base data structures when instantiated" do
-        [:block_id, :start_date, :number_of_nights, :rooms, :reservations].each do |prop|
-          @block.must_respond_to prop
-        end
+    end
 
-        @block.block_id.must_be_kind_of Integer
-        @block.start_date.must_be_kind_of Date
-        @block.number_of_nights.must_be_kind_of Integer
-        @block.rooms.must_be_kind_of Array
-        @block.reservations.must_be_kind_of Array
+    it "assigns a unique block_id" do
+      @block.block_id.must_equal 1
+    end
 
-      end
+    it "assigns x number of rooms based on num_rooms indicated" do
+      @block.rooms.length.must_equal 4
+
+      all_rooms = @block.rooms.all? { |room| room.class == Hotel::Room }
+      all_rooms.must_equal true
+    end
+
+    it "add block to administrator collection of blocks" do
+      @administrator.blocks.must_include @block
+      @administrator.blocks.length.must_equal 1
     end
 
   end
+
+
+
 
 end
