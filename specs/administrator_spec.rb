@@ -39,22 +39,22 @@ describe "Administrator class" do
       @room_list = administrator.room_list
     end
 
-    it "loads a list of room instances into room_list array" do
+    it "loads a list of 20 room instances into room_list array" do
       @room_list.must_be_kind_of Array
       all_rooms = @room_list.all? { |room| room.class == Hotel::Room }
       all_rooms.must_equal true
+
+      @room_list.length.must_equal 20
     end
 
-    it "can access the information of the rooms" do
-      @room_list.first.room_id.must_equal 1
-      @room_list.last.room_id.must_equal 20
-      @room_list.length.must_equal 20
+    it "can access the instance variables of the rooms" do
 
-      all_room_reservations = @room_list.all? { |room| room.reservations.class == Array }
-      all_room_reservations.must_equal true
+      @room_list.each do |room|
+        [:room_id, :reservations, :blocks].each do |prop|
+          room.must_respond_to prop
+        end
+      end
 
-      all_room_blocks = @room_list.all? { |room| room.blocks.class == Array }
-      all_room_blocks.must_equal true
     end
 
     it "stores room id as an integer within range 1 and 20" do

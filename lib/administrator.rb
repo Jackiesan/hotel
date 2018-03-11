@@ -29,7 +29,7 @@ module Hotel
 
     def find_room(room_id)
       check_room_id(room_id)
-      @rooms.find{ |room| room.room_id == room_id}
+      rooms.find{ |room| room.room_id == room_id}
     end
 
     def reservations_on_date(date)
@@ -107,13 +107,6 @@ module Hotel
         return new_block
       end
     end
-
-    # def find_block(block_id)
-    #   check_block_id(block_id)
-    #
-    #   return @blocks.find{ |block| block.block_id == block_id}
-    #
-    # end
 
     def reserve_room_from_block(block_id)
       check_block_id(block_id)
