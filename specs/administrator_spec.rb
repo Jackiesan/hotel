@@ -163,12 +163,12 @@ describe "Administrator class" do
 
     it "accurately accesses information of the new reservation" do
       @first_reservation.reservation_id.must_equal 1
-      @first_reservation.date.must_equal Date.new(2017,2,3)
+      @first_reservation.start_date.must_equal Date.new(2017,2,3)
       @first_reservation.number_of_nights.must_equal 3
       @first_reservation.room.room_id.must_equal 9
 
       @first_reservation.reservation_id.must_be_kind_of Integer
-      @first_reservation.date.must_be_kind_of Date
+      @first_reservation.start_date.must_be_kind_of Date
       @first_reservation.number_of_nights.must_be_kind_of Integer
       @first_reservation.room.must_be_kind_of Hotel::Room
     end

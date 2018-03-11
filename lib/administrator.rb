@@ -63,7 +63,7 @@ module Hotel
 
         reservation_input = {
           reservation_id: reservations.length + 1,
-          date: date,
+          start_date: date,
           number_of_nights: number_of_nights,
           room: room,
           block_of_dates: searched_dates,
@@ -78,9 +78,9 @@ module Hotel
     end
 
     def create_block(start_date, number_of_nights, num_rooms)
-
       check_date(start_date)
       check_number_of_nights(number_of_nights)
+      check_num_of_rooms(num_rooms)
 
       rooms_available = show_rooms_available(start_date, number_of_nights)
 
@@ -88,22 +88,72 @@ module Hotel
         raise ArgumentError.new("Not enough rooms are available for block creation. Number of rooms entered: #{num_rooms}")
       else
 
-      rooms = rooms_available[0...num_rooms]
+        rooms = rooms_available[0...num_rooms]
 
 
-      block_info = {
-        block_id: blocks.length + 1,
-        start_date: start_date,
-        number_of_nights: number_of_nights,
-        rooms: rooms
-      }
+        block_info = {
+          block_id: blocks.length + 1,
+          start_date: start_date,
+          number_of_nights: number_of_nights,
+          rooms: rooms
+        }
 
-      new_block = Block.new(block_info)
-      rooms.each do |room|
-        room.add_block(new_block)
+        new_block = Block.new(block_info)
+        rooms.each do |room|
+          room.add_block(new_block)
+        end
+        @blocks << new_block
+        return new_block
       end
-      return new_block
     end
+
+    def find_block(block_id)
+      check_block_id(block_id)
+
+      return @blocks.find{ |block| block.block_id == block_id}
+
+    end
+
+    def reserve_room_from_block(block_id)
+      check_block_id(block_id)
+
+      block = find_block(block_id)
+
+      if block.reservations.length == block.rooms.length
+        raise ArgumentError.new("There are no available rooms left for this block")
+      else
+
+        room = block.rooms.first
+
+        new_reservation_info = {
+          reservation_id: reservations.length + 1,
+          start_date: block.start_date,
+          number_of_nights: block.number_of_nights,
+          room: room,
+          block_of_dates: block.dates_of_block
+        }
+
+
+        new_reservation = Hotel::Reservation.new(new_reservation_info)
+
+        block.add_reservation(new_reservation)
+        room.add_reservation(new_reservation)
+        reservations << new_reservation
+
+        return new_reservation
+
+      end
+    end
+
+    def rooms_from_block_available?(block_id)
+      block = find_block(block_id)
+
+      if block.rooms.length == block.reservations.length
+        return false
+      else
+        return true
+      end
+
     end
 
     private
@@ -144,25 +194,47 @@ module Hotel
       end
     end
 
+    def check_block_id(block_id)
+      if block_id.class != Integer || block_id < 1 || block_id > blocks.length
+        raise ArgumentError.new("Block ID entered is not valid (got #{block_id})")
+      end
+    end
+
+    def check_num_of_rooms(num_rooms)
+      if num_rooms.class != Integer || num_rooms < 1 || num_rooms > 5
+        raise ArgumentError.new("Number of rooms entered is not valid (got #{num_rooms})")
+      end
+    end
+
   end
 
 end
 
+#
+# administrator = Hotel::Administrator.new
+#
+# block = administrator.create_block(Date.new(2017,3,10), 2, 5)
+# puts block
+# block.rooms.each do |room|
+#   puts room
+#   puts room.room_id
+# end
+#
+# puts "dates of block: #{block.dates_of_block}"
+#
+# administrator.reserve_room_from_block(1)
+# administrator.reserve_room_from_block(1)
+# puts administrator.reservations.length
+#
+# # puts "load_available_rooms: #{block.load_available_rooms.length}"
+# puts "Blocks reservations #{block.reservations.length}"
+# # binding.pry
+# puts "Rooms avaialble? #{administrator.rooms_from_block_available?(1)}"
+# administrator.reserve_room_from_block(1)
+# puts "added new reservation"
+# puts "Rooms avaialble? #{administrator.rooms_from_block_available?(1)}"
+# puts block.reservations.length
+# puts block.rooms.length
+# puts administrator.reservations.length
 
-administrator = Hotel::Administrator.new
-
-block = administrator.create_block(Date.new(2017,3,10), 2, 2)
-puts block
-block.rooms.each do |room|
-  puts room
-  puts room.room_id
-end
-
-puts "dates of block: #{block.dates_of_block}"
-puts
-room_1 = administrator.find_room(1)
-room_2 = administrator.find_room(2)
-
-puts room_1.blocks
-puts room_2.blocks
-puts "reserved_nights: #{room_1.unavailable_nights}"
+# puts "reservation_id: #{new_reservation.reservation_id}, room number: #{new_reservation.room.room_id}, dates room is booked for #{new_reservation.block_of_dates}, cost: #{new_reservation.total_cost}, number of reservations in admin: #{administrator.reservations.length}, in rooms reservations? #{room_1.reservations} "
