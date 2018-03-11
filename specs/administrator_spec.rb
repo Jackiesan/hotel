@@ -296,6 +296,7 @@ describe "Administrator class" do
     before do
       @administrator = Hotel::Administrator.new
       @block = @administrator.create_block(Date.new(2017,3,10), 3, 4)
+
     end
 
     it "is an instance of Block" do
@@ -326,9 +327,48 @@ describe "Administrator class" do
       all_rooms.must_equal true
     end
 
-    it "add block to administrator collection of blocks" do
+    it "adds block to administrator collection of blocks" do
       @administrator.blocks.must_include @block
       @administrator.blocks.length.must_equal 1
+    end
+
+    it "adds the block to the collection of blocks for each room" do
+      all_rooms = @block.rooms.all? { |room| room.blocks.include? @block }
+      all_rooms.must_equal true
+
+    end
+
+    it "raises error if no rooms are available for that date range" do
+      new_admin = Hotel::Administrator.new
+      i = 0
+      # regular reservations
+      15.times do
+        new_admin.reserve_a_room(Date.new(2017,3,12), 3, i += 1)
+      end
+
+      # rooms that are part of block
+
+      new_admin.create_block(Date.new(2017,3,12), 3, 5)
+
+      # assertion
+      proc { new_admin.create_block(Date.new(2017,3,12), 3, 3) }.must_raise ArgumentError
+
+    end
+
+    it "raises an error if num_rooms is greater than 5 or less than 1" do
+      proc { @administrator.create_block(Date.new(2017,5,16), 3, 7) }.must_raise ArgumentError
+
+      proc { @administrator.create_block(Date.new(2017,5,16), 3, 0) }.must_raise ArgumentError
+    end
+
+    it "raises an error if start_date is not Date object" do
+      proc { @administrator.create_block(-3, 2, 3) }.must_raise ArgumentError
+    end
+
+    it "raises an error is number_of_nights entered is less than 1 or not an integer" do
+      proc { @administrator.create_block(Date.new(2017,4,28), 0, 3) }.must_raise ArgumentError
+
+      proc { @administrator.create_block(Date.new(2017,4,28), 3.3, 4) }.must_raise ArgumentError
     end
 
   end

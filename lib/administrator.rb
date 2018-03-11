@@ -108,12 +108,12 @@ module Hotel
       end
     end
 
-    def find_block(block_id)
-      check_block_id(block_id)
-
-      return @blocks.find{ |block| block.block_id == block_id}
-
-    end
+    # def find_block(block_id)
+    #   check_block_id(block_id)
+    #
+    #   return @blocks.find{ |block| block.block_id == block_id}
+    #
+    # end
 
     def reserve_room_from_block(block_id)
       check_block_id(block_id)
@@ -206,6 +206,13 @@ module Hotel
       if num_rooms.class != Integer || num_rooms < 1 || num_rooms > 5
         raise ArgumentError.new("Number of rooms entered is not valid (got #{num_rooms})")
       end
+    end
+
+    def find_block(block_id)
+      check_block_id(block_id)
+
+      return @blocks.find{ |block| block.block_id == block_id}
+
     end
 
   end
