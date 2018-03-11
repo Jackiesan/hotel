@@ -141,15 +141,18 @@ describe "Administrator class" do
     before do
       @administrator = Hotel::Administrator.new
 
-      @administrator.reserve_a_room(Date.new(2017,2,3), 3, 9)
-      @administrator.reserve_a_room(Date.new(2017,2,3), 5, 10)
-      @administrator.reserve_a_room(Date.new(2017,2,6), 5, 9)
+      @administrator.reserve_a_room(Date.new(2017,2,3), 3, 1)
+      @administrator.reserve_a_room(Date.new(2017,2,3), 5, 2)
+      @administrator.reserve_a_room(Date.new(2017,2,6), 5, 1)
 
     end
 
     it "returns array of room objects that are available during date range" do
 
-      rooms_available = @administrator.show_rooms_available(Date.new(2017,2,3), 3)
+      room_one = @administrator.find_room(1)
+      room_two = @administrator.find_room(2)
+
+      rooms_available = @administrator.show_rooms_available(Date.new(2017,2,6), 3)
 
       rooms_available.must_be_kind_of Array
 
@@ -157,6 +160,9 @@ describe "Administrator class" do
       list_of_rooms.must_equal true
 
       rooms_available.length.must_equal 18
+
+
+      rooms_available.wont_include room_one || room_two
 
     end
 
@@ -170,6 +176,18 @@ describe "Administrator class" do
       new_administrator = Hotel::Administrator.new
 
       new_administrator.show_rooms_available(Date.new(2017,3,2), 1).length.must_equal 20
+    end
+
+    it "returns an empty array if no rooms are available" do
+      new_administrator = Hotel::Administrator.new
+
+      i = 0
+      20.times do |reservation|
+        new_administrator.reserve_a_room(Date.new(2017,2,3), 2, i += 1)
+      end
+
+      new_administrator.show_rooms_available(Date.new(2017,2,4),2).must_be_empty
+
     end
   end
 
