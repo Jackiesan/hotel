@@ -20,7 +20,7 @@ module Hotel
     end
 
     def total_cost
-      return room_rate * @number_of_nights
+      return room_rate * number_of_nights
     end
 
   end

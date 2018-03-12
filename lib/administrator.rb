@@ -103,7 +103,7 @@ module Hotel
         rooms.each do |room|
           room.add_block(new_block)
         end
-        @blocks << new_block
+        blocks << new_block
         return new_block
       end
     end
@@ -205,7 +205,7 @@ module Hotel
     def find_block(block_id)
       check_block_id(block_id)
 
-      return @blocks.find{ |block| block.block_id == block_id}
+      return blocks.find{ |block| block.block_id == block_id}
 
     end
 

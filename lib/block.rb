@@ -32,7 +32,7 @@ module Hotel
         raise ArgumentError.new("Can only add a Reservations instance to reservations collection")
       else
 
-        @reservations << reservation
+        reservations << reservation
       end
     end
 

@@ -21,7 +21,7 @@ module Hotel
         raise ArgumentError.new("Can only add a Room instance to reservation collection")
       end
 
-      @reservations << reservation
+      reservations << reservation
     end
 
     def add_block(block)
@@ -29,7 +29,7 @@ module Hotel
         raise ArgumentError.new("Can only add a Block instance to block collection")
       end
 
-      @blocks << block
+      blocks << block
     end
 
     def unavailable_nights
