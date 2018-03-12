@@ -186,7 +186,9 @@ describe "Administrator class" do
         new_administrator.reserve_a_room(Date.new(2017,2,3), 2, i += 1)
       end
 
+      new_administrator.show_rooms_available(Date.new(2017,2,4),2).must_be_kind_of Array
       new_administrator.show_rooms_available(Date.new(2017,2,4),2).must_be_empty
+
 
     end
   end
@@ -203,13 +205,9 @@ describe "Administrator class" do
     end
 
     it "accurately accesses information of the new reservation" do
-      @first_reservation.reservation_id.must_equal 1
-      @first_reservation.start_date.must_equal Date.new(2017,2,3)
-      @first_reservation.number_of_nights.must_equal 3
-      @first_reservation.room.must_equal @room
-      @first_reservation.block_of_dates.must_equal [Date.new(2017,2,3), Date.new(2017,2,4), Date.new(2017,2,5)]
-      @first_reservation.room_rate.must_equal 200.00
-      @first_reservation.check_out_date.must_equal Date.new(2017,2,6)
+      [:reservation_id, :start_date, :number_of_nights, :room, :block_of_dates, :room_rate, :check_out_date].each do |prop|
+        @first_reservation.must_respond_to prop
+      end
 
       @first_reservation.reservation_id.must_be_kind_of Integer
       @first_reservation.start_date.must_be_kind_of Date
