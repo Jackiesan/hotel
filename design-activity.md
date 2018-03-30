@@ -52,3 +52,8 @@
 ## Which implementation better adheres to the single responsibility principle? Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?
 
 Implementation B adheres a lot more to the single responsibility principle. Each class has a single responsibility to calculate how much it is contributing to the total cost of the order. It is also more loosely coupled as it knows less about other classes when compared to implementation A.
+
+## Activity
+* My class Administrator is taking on multiple tasks and doing more than it should. For example it is finding whether a reservation is conflicting with a date. This is a role that should not fall under the Administrator class.
+* To improve the design I would move this responsibility of checking for date overlap in the reservation class. This would be an improvement because it would give the reservation class a more defined responsibility and Administrator will have one less task.
+* In my method administrator#reserve_a_room I removed the section where the administrator check for overlap and instead called the method of show_rooms_available to check whether the room is available on that particular date range.

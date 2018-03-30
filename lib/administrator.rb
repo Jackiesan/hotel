@@ -54,26 +54,30 @@ module Hotel
       check_number_of_nights(number_of_nights)
 
       room = find_room(room_id)
-      searched_dates = convert_to_dates(date, number_of_nights)
-      rooms_unavailable_nights = room.unavailable_nights
 
-      if overlap?(searched_dates, rooms_unavailable_nights)
-        raise ArgumentError.new("Room is not available to book during these dates.")
-      else
-
-        reservation_input = {
-          reservation_id: reservations.length + 1,
-          start_date: date,
-          number_of_nights: number_of_nights,
-          room: room,
-          block_of_dates: searched_dates,
-          room_rate: 200.00
-        }
-
-        new_reservation = Reservation.new(reservation_input)
-        room.add_reservation(new_reservation)
-        reservations << new_reservation
+      unless show_rooms_available(date, number_of_nights).include? room
+        raise ArgumentError.new("Room already has a reservation between these dates")
       end
+      searched_dates = convert_to_dates(date, number_of_nights)
+      # rooms_unavailable_nights = room.unavailable_nights
+
+      # if overlap?(searched_dates, rooms_unavailable_nights)
+      #   raise ArgumentError.new("Room is not available to book during these dates.")
+      # else
+
+      reservation_input = {
+        reservation_id: reservations.length + 1,
+        start_date: date,
+        number_of_nights: number_of_nights,
+        room: room,
+        block_of_dates: searched_dates,
+        room_rate: 200.00
+      }
+
+      new_reservation = Reservation.new(reservation_input)
+      room.add_reservation(new_reservation)
+      reservations << new_reservation
+
       return new_reservation
 
     end
